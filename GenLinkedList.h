@@ -69,10 +69,12 @@ class GenLinkedList{
         void insertTail(T d); //insert data at the Tail of the list
         T removeHead(); //remove at the head and return the data
         T removeTail(); //remove at the tail and return the data
-        T removeNode(T value); //find and remove a specific node and return the data
-        int find(T value); //find a specfic value and return that data
+        T removeNode(int pos); //find and remove a specific node and return the data
+        T find(int value); //find a specific position and return the data
+        void sort(); //sort the linkedlist in ascending order
 
-
+        void print(); //print all the nodes in the linked list
+        void printReverse(); //print all the nodes in reverse order
         bool isEmpty(); //check if the LinkedList is empty
         unsigned int getSize(); //get the size of the LinkedList
 
@@ -107,6 +109,7 @@ GenLinkedList<T>::~GenLinkedList(){
         //update next to the next node in the list to be deleted
         nxt = nxt->next;
         //delete the curr node
+        current = NULL;
         delete current;
         //update curr with the next node in the list
         current = nxt;
@@ -229,20 +232,25 @@ T GenLinkedList<T>::removeTail(){
 
 template <typename T>
 /** This method removes the node with a specific value and updates pointers
- * param: type T value representing the value to remove
+ * param: int position representing the position of the value
  * return: type T representing the data removed
  */
-T GenLinkedList<T>::removeNode(T value){
+T GenLinkedList<T>::removeNode(int pos){
     //Error check: is the list empty
     if(isEmpty()){
         throw runtime_error("List empty");
     }
+    if(pos == 0){
+        return removeHead();
+    }
 
     //set a curr temp node to the head of the LinkedList
     ListNode<T>*curr = head;
+    int position = 0;
     //while the data doesn't match the value
-    while(curr->data != value){
+    while(position != pos ){
         //update curr
+        ++position;
         curr = curr->next;
         if(curr == NULL){ //if you reach the end and the value is not found then return -1
             return -1;
@@ -279,33 +287,27 @@ T GenLinkedList<T>::removeNode(T value){
 
 template <typename T>
 /** Find but not remove a specific node
- * param: type T value representing the node to find
+ * param: int value representing the position to find
  * return the position of the node
  */
-int GenLinkedList<T>::find(T value){
+T GenLinkedList<T>::find(int value){
     
-    int pos = -1;
+    int pos = 0;
     //temp node set to the head
     ListNode<T>*curr = head;
 
     //loop to check every position  
-    while(curr != NULL){
-
-        ++pos; //incrememnt position
-        if(curr->data == value){ //check if curr's data is the value
-            break; //if it is then break from the loop
-        }
-        curr = curr->next; //update curr
-       
+    while(pos != value){
+        ++pos;
+        curr = curr->next;
     }
-    //if curr reached the end without finding the value then position is -1
     if(curr == NULL){
-        pos = -1; 
+        return -1;
     }
-    //delete curr
+    T data = curr->data;
+    curr = NULL;
     delete curr;
-    //return the position 
-    return pos;
+    return data;
 }
 
 template <typename T>
@@ -322,5 +324,53 @@ template <typename T>
  */
 unsigned int GenLinkedList<T>::getSize(){
     return size;
+}
+
+/** A method that prints every node in the LinkedList
+ */
+template <typename T>
+void GenLinkedList<T>::print(){
+    ListNode<T> *node = head;
+    while(node != NULL){
+        cout << node->data << endl;
+        node = node->next;
+    }
+    delete node;
+}
+
+/** A method that prints every node in the LinkedList in reverse
+ */
+template <typename T>
+void GenLinkedList<T>::printReverse(){
+    ListNode<T> *node = tail;
+    while(node != NULL){
+        cout << node->data << endl;
+        node = node->prev;
+    }
+    delete node;
+}
+
+/** Sort the LinkedList in ascending order
+ */
+template<typename T>
+void GenLinkedList<T>::sort(){
+    ListNode<T> *i = head;
+    ListNode<T> *j = NULL;
+    T temp; 
+    //conduct the sorting
+    while(i != NULL){
+        j = i->next;
+        while(j!=NULL){
+            //if i is greater than j then swap the data
+            if(i->data > j->data){
+                temp = i->data;
+                i->data = j->data;
+                j->data = temp;
+            }
+            j = j->next;
+        }
+        i = i->next;
+    }
+  
 }
 #endif

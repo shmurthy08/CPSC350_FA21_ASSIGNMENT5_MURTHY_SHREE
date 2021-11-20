@@ -12,7 +12,7 @@
 #define GENQUEUE_H
 #include <iostream>
 #include <exception>
-#include "GenLinkedList.h"
+#include "MyList.h"
 
 using namespace std;
 
@@ -33,8 +33,8 @@ class GenQueue{
         unsigned int getSize(); //the size of the queue
         bool isEmpty(); //is the queue empty
     private:
-        unsigned int mSize; //size of the queue
-        GenLinkedList<T> *myQueue;
+        
+        MyList<T> *myQueue;
 
 };
 
@@ -44,8 +44,8 @@ template <typename T>
  * Default Constructor
  */
 GenQueue<T>::GenQueue(){
-    mSize = 0;
-    myQueue = new GenLinkedList<T>();
+    
+    myQueue = new MyList<T>();
 }
 
 template <typename T>
@@ -60,9 +60,9 @@ template <typename T>
 /** Insert data to the front of the queue
  * param: data of any type representing the data to be inserted
  */
-void GenQueue<T>::insert(T data){
-    list->insertTail(data); //Follow the FIFO model so every node is added to the end of the LinkedList
-    ++mSize; //increment size
+void GenQueue<T>::push(T data){
+    myQueue->append(data); //Follow the FIFO model so every node is added to the end of the LinkedList
+    
     
 }
 
@@ -75,8 +75,8 @@ T GenQueue<T>::pop(){
     if(isEmpty()){
         throw runtime_error("Queue is empty");
     }
-    T data = myQueue->removeHead(); //pop the first element in the queue
-    --mSize; //decrement size of queue
+    T data = myQueue->remove(); //pop the first element in the queue
+    //--mSize; //decrement size of queue
     return data;
 
 }
@@ -91,32 +91,19 @@ T GenQueue<T>::peek(){
         throw runtime_error("EMPTY STACK!!!");
     }
     //peek at the data
-    T data = list->removeHead();
-    list->insertHead(data);
+    T data = myQueue->remove();
+    myQueue->prepend(data);
     return data;
 }
 
-// template <typename T>
-// T GenQueue::insertPriQueue(T data){
-//     if(isFull()){
-//         throw runtime_error("priority queue is full!");
 
-//     }
-//     int i = numElements - 1;
-//     while(i>=0 && data < myQueue[i]){
-//         myQueue[i+1] = myQueue[i];
-//         i--;
-//     }
-//     myQueue[i+1] = data;
-//     numElements++;
-// }
 
 template <typename T>
 /** Checks if the queue is empty
  * return: boolean T/F depending on the size of the queue
  */
 bool GenQueue<T>::isEmpty(){
-    return (mSize == 0);
+    return (getSize() == 0);
 }
 
 
@@ -125,7 +112,7 @@ template <typename T>
  * return: int representing the size of the queue
  */
 unsigned int GenQueue<T>::getSize(){
-    return mSize;
+    return myQueue->getLength();
 }
 
 
